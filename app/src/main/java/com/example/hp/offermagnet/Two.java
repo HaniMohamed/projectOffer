@@ -77,9 +77,8 @@ public class Two extends Fragment  {
                             JSONArray jsonArray = jsonObject.getJSONArray("data");
                             for (int i=0; i<jsonArray.length(); i++){
                                 JSONObject object = jsonArray.getJSONObject(i);
-                            //    Toast.makeText(getActivity(),"converted",Toast.LENGTH_SHORT).show();
                                 DataItemRequest item = new DataItemRequest(
-                                        object.getString("id"),
+                                        object.getString("request_id"),
                                         object.getString("title"),
                                         object.getString("description"),
                                         object.getString("profile_picture"),

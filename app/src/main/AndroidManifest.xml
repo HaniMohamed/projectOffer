@@ -41,7 +41,7 @@
         <activity android:name=".uploadImage"></activity>
         <activity android:name=".GPSlocation"/>
 
-        <service android:name=".services.OfferAndRequestsNotifyService" />
+        <service android:name=".services.NotificationService" />
 
     </application>
 

@@ -42,7 +42,7 @@ import java.util.Map;
 
 
 
-public class OfferAndRequestsNotifyService extends Service {
+public class NotificationService extends Service {
 
 
     public Context context = this;
@@ -53,7 +53,7 @@ public class OfferAndRequestsNotifyService extends Service {
     SharedPreferences appPrefrences;
     SharedPreferences.Editor prefEditor;
 
-    int seenOffer =0, seenRequest=0;
+    int seenOffer =0, seenRequest=0, seenOfferPerReq=0;
 
     @Override
     public void onCreate() {
@@ -68,6 +68,7 @@ public class OfferAndRequestsNotifyService extends Service {
             public void run() {
                 getOffers();
                getRequests();
+               getOfferOnRequest();
 
                 handler.postDelayed(runnable, 10000);
             }
@@ -200,6 +201,74 @@ public class OfferAndRequestsNotifyService extends Service {
                                     manager.notify(id, builder.build());
 
                                     prefEditor.putInt("seenRequest",id);
+                                    prefEditor.apply();
+                                }
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap hashMap = new HashMap();
+                hashMap.put("id", db.getId());
+                hashMap.put("city", db.getCity());
+                return hashMap;
+            }
+        };
+        Volley.newRequestQueue(context).add(stringRequest);
+
+
+    }
+
+
+    public void getOfferOnRequest(){
+        seenOfferPerReq=appPrefrences.getInt("seenOfferPerReq",0);
+        //Toast.makeText(context, "Service still running", Toast.LENGTH_LONG).show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://offer-system.000webhostapp.com/getOffersOnRequest.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("data");
+
+                            for (int x = 0; x < jsonArray.length(); x++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(x);
+                                int id = Integer.parseInt(jsonObject1.getString("offer_id"));
+                                String title=jsonObject1.getString("req_title");
+                                String desc=jsonObject1.getString("offer_desc");
+
+                                if(id>seenOfferPerReq){
+                                    NotificationCompat.Builder builder =
+                                            new NotificationCompat.Builder(context)
+                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setContentTitle("You received offer on: "+title)
+                                                    .setContentText(desc);
+
+                                    Intent notificationIntent = new Intent(context, NavDrawer.class);
+                                    PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                                            PendingIntent.FLAG_UPDATE_CURRENT);
+                                    builder.setContentIntent(contentIntent);
+                                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    builder.setSound(alarmSound);
+                                    // Add as notification
+                                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                    manager.notify(id, builder.build());
+
+                                    prefEditor.putInt("seenOfferPerReq",id);
                                     prefEditor.apply();
                                 }
 

@@ -60,7 +60,6 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
     EditText txtOffer;
     Button btnSend;
 
-    ViewHolder holder;
     int position;
 
     Database db;
@@ -86,8 +85,7 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolder hold, int i) {
-        this.holder=hold;
+    public void onBindViewHolder(ViewHolder holder, int i) {
         this.position=i;
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -251,7 +249,7 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
                 btnSend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(context,holder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
+
                         if (!txtOffer.getText().toString().equals("")) {
                             Toast.makeText(context, "Start", Toast.LENGTH_SHORT).show();
                             final ProgressDialog progressDialog = new ProgressDialog(context);

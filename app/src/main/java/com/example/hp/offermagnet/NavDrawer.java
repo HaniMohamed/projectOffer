@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.hp.offermagnet.services.OfferAndRequestsNotifyService;
+import com.example.hp.offermagnet.services.NotificationService;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -39,7 +39,7 @@ public class NavDrawer extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
-        startService(new Intent(this, OfferAndRequestsNotifyService.class));
+        startService(new Intent(this, NotificationService.class));
 
         fragmentManager = getSupportFragmentManager();
         db = new Database(this);
