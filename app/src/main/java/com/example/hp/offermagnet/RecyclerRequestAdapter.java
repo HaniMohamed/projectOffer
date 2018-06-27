@@ -60,12 +60,18 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
     EditText txtOffer;
     Button btnSend;
 
+    ViewHolder holder;
+    int position;
+
+    Database db;
     View view;
     // data is passed into the constructor
     public RecyclerRequestAdapter(ArrayList<DataItemRequest> dataItem, Context context) {
 
         this.dataItem = dataItem;
         this.context=context;
+        db=new Database(context);
+
 
     }
 
@@ -80,9 +86,9 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-
-
+    public void onBindViewHolder(ViewHolder hold, int i) {
+        this.holder=hold;
+        this.position=i;
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         alertLayout = inflater.inflate(R.layout.fragment_request_details, null);
@@ -245,6 +251,7 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
                 btnSend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(context,holder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
                         if (!txtOffer.getText().toString().equals("")) {
                             Toast.makeText(context, "Start", Toast.LENGTH_SHORT).show();
                             final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -277,7 +284,7 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
                                 @Override
                                 protected Map<String, String> getParams() throws AuthFailureError {
                                     HashMap<String, String> stringStringHashMap = new HashMap<>();
-                                    stringStringHashMap.put("user_id", dataItem.get(position).getUser_id());
+                                    stringStringHashMap.put("user_id", db.getId());
                                     stringStringHashMap.put("request_id", dataItem.get(position).getId());
                                     stringStringHashMap.put("description", txtOffer.getText().toString());
                                     return stringStringHashMap;

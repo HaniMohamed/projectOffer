@@ -1,14 +1,12 @@
 package com.example.hp.offermagnet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.hp.offermagnet.services.OfferAndRequestsNotifyService;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -30,19 +30,39 @@ public class NavDrawer extends AppCompatActivity
     CircleImageView imageView;
     Fragment fragment;
     FragmentManager fragmentManager;
-TextView name;
-Database db;
+    TextView name;
+    Database db;
+    EditText search_text;
+    Button do_search;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav_drawer);
 
+        startService(new Intent(this, OfferAndRequestsNotifyService.class));
+
         fragmentManager = getSupportFragmentManager();
-db=new Database(this);
+        db = new Database(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-name=(TextView)findViewById(R.id.name);
+        name = (TextView) findViewById(R.id.name);
+
+        search_text= findViewById(R.id.search_text);
+        do_search= findViewById(R.id.do_search);
+        do_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment = new HomeFragment();
+                Bundle bundle= new Bundle();
+                bundle.putString("srchTxt", search_text.getText().toString());
+                fragment.setArguments(bundle);
+                fragmentManager.beginTransaction();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.container_body, fragment).addToBackStack( "home" ).commit();
+
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -53,7 +73,7 @@ name=(TextView)findViewById(R.id.name);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View view = navigationView.getHeaderView(0);
-        name=(TextView)findViewById(R.id.yourname);
+        name = (TextView) findViewById(R.id.yourname);
 
         imageView = view.findViewById(R.id.imageProfilee);
         //if (imageView != null)
@@ -64,9 +84,12 @@ name=(TextView)findViewById(R.id.name);
 
 
         fragment = new HomeFragment();
+        Bundle bundle= new Bundle();
+        bundle.putString("srchTxt", "");
+        fragment.setArguments(bundle);
         fragmentManager.beginTransaction();
-        final FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.viewpager, fragment).commit();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container_body, fragment).addToBackStack( "home" ).commit();
 
     }
 
@@ -112,25 +135,25 @@ name=(TextView)findViewById(R.id.name);
             fragment = new HomeFragment();
             fragmentManager.beginTransaction();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame, fragment).commit();
+            transaction.replace(R.id.container_body, fragment).addToBackStack( "home" ).commit();
         } else if (id == R.id.category) {
 
         } else if (id == R.id.wishlist) {
             fragment = new WishlistFragment();
             fragmentManager.beginTransaction();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.viewpager, fragment).commit();
+            transaction.replace(R.id.container_body, fragment).addToBackStack( "wishlist" ).commit();
         } else if (id == R.id.myOrder) {
             fragment = new MyOrderFragment();
             fragmentManager.beginTransaction();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.viewpager, fragment).commit();
+            transaction.replace(R.id.container_body, fragment).addToBackStack( "myorder" ).commit();
 
         } else if (id == R.id.MyProfile) {
             fragment = new ProfileFragment();
             fragmentManager.beginTransaction();
             final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame, fragment).commit();
+            transaction.replace(R.id.container_body, fragment).addToBackStack( "myprofile" ).commit();
 
         }
 

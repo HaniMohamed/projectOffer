@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frame_offer"
@@ -22,7 +22,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@color/NavigationDrawerColor"
-        app:srcCompat="@drawable/add_plus_button" />
+        app:srcCompat="@drawable/add_plus_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
 
 
-</FrameLayout>
+</RelativeLayout>

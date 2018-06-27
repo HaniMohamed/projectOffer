@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 /**
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
  */
 public class HomeFragment extends Fragment {
 
+    String srchTxt="";
 
     public HomeFragment() {
         // Required empty public constructor
@@ -32,11 +34,21 @@ public class HomeFragment extends Fragment {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
+
+        if(getArguments().getString("srchTxt").equals("")) {
+
+        }else{
+           srchTxt=getArguments().getString("srchTxt");
+        }
+
+
         TabLayout tabs = (TabLayout) view.findViewById(R.id.tabs2);
         ViewPager pager = (ViewPager) view.findViewById(R.id.viewpager2);
-        PagerAdapter TabAdapter = new tabpagerAdapter(getActivity().getSupportFragmentManager());
+        PagerAdapter TabAdapter = new tabpagerAdapter(getActivity().getSupportFragmentManager(),srchTxt);
         pager.setAdapter(TabAdapter);
+
         tabs.setupWithViewPager(pager);
+
 
 
 

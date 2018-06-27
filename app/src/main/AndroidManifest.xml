@@ -39,9 +39,10 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".uploadImage"></activity>
-        <activity android:name=".GPSlocation">
+        <activity android:name=".GPSlocation"/>
 
-        </activity>
+        <service android:name=".services.OfferAndRequestsNotifyService" />
+
     </application>
 
 </manifest>

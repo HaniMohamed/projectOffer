@@ -39,6 +39,8 @@ public class One extends Fragment  {
     MyRecyclerViewAdapter adapter;
     ArrayList<DataItem> dataItems;
 Database db;
+String srchTxt;
+String serachText;
     public One() {
         // Required empty public constructor
     }
@@ -46,6 +48,7 @@ public  void onStart() {
 
     super.onStart();
     db=new Database(getActivity());
+
 }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +60,13 @@ public  void onStart() {
         dataItems = new ArrayList<DataItem>();
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
+        if(getArguments().getString("srchTxt").equals("")) {
+
+        }else{
+            serachText= getArguments().getString("srchTxt");
+            Toast.makeText(getActivity(),"one:::"+serachText,Toast.LENGTH_SHORT).show();
+        }
+
 
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
@@ -66,7 +76,7 @@ public  void onStart() {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getActivity(),response,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(),response,Toast.LENGTH_SHORT).show();
                         try {
               //              Toast.makeText(getActivity(),"entered to one ",Toast.LENGTH_SHORT).show();
                             String s = URLEncoder.encode(response,"ISO-8859-1");
@@ -83,7 +93,7 @@ public  void onStart() {
                             JSONArray jsonArray = jsonObject.getJSONArray("data");
                             for (int i=0; i<jsonArray.length(); i++){
                                 JSONObject object = jsonArray.getJSONObject(i);
-                                Toast.makeText(getActivity(),"entered to one tr ",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getActivity(),"entered to one tr ",Toast.LENGTH_SHORT).show();
                                 DataItem item = new DataItem(
 
                                         object.getString("id"),
@@ -137,7 +147,7 @@ public  void onStart() {
                 if (check[0] == true) {
                     Fragment productDetailFragment = new SubmitOfferFragment();
                     FragmentManager ft = getFragmentManager();
-                    ft.beginTransaction().replace(R.id.frame_offer, productDetailFragment).commit();
+                        ft.beginTransaction().replace(R.id.frame_offer, productDetailFragment).addToBackStack( "newoffer" ).commit();
                     fab.setVisibility(View.GONE);
                 }
             }
@@ -153,4 +163,13 @@ public  void onStart() {
         fab.setVisibility(View.GONE);
 
     }*/
+
+
+   public void setSeacrh(String text){
+       srchTxt=text;
+       Toast.makeText(getActivity(),srchTxt,Toast.LENGTH_SHORT).show();
+    }
+
+
+
 }

@@ -41,6 +41,7 @@ public class Two extends Fragment  {
     }
     Database db;
     public static FloatingActionButton fab;
+    ArrayList<DataItemRequest> dataItems=new ArrayList<DataItemRequest>();
 
     RecyclerRequestAdapter adapter;
     @Override
@@ -50,7 +51,7 @@ public class Two extends Fragment  {
         View view= inflater.inflate(R.layout.fragment_request, container, false);
         final RecyclerView recyclerView=(RecyclerView) view.findViewById(R.id.recyclerviewRequest);
         db=new Database(getActivity());
-        final ArrayList<DataItemRequest> dataItems=new ArrayList<DataItemRequest>();
+
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
