@@ -203,7 +203,7 @@ public class RecyclerRequestAdapter extends RecyclerView.Adapter<RecyclerRequest
                             @Override
                             protected Map<String, String> getParams() throws AuthFailureError {
                                 HashMap<String, String> stringStringHashMap = new HashMap<>();
-                                stringStringHashMap.put("user_id", String.valueOf(5));
+                                stringStringHashMap.put("user_id", db.getId());
                                 stringStringHashMap.put("request_id", String.valueOf(dataItem.get(position).getId()));
                                 return stringStringHashMap;
                             }

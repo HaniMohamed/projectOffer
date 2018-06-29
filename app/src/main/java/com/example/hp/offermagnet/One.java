@@ -131,12 +131,13 @@ public  void onStart() {
                 stringStringHashMap.put("city",db.getCity());
                 return stringStringHashMap;
             }
-
         };
+
         Volley.newRequestQueue(getActivity()).add(stringRequest);
 
         //recyclerView.setAdapter(adapter);
-//        adapter.setClickListener(this);
+        //adapter.setClickListener(this);
+
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         fab = (FloatingActionButton) view.findViewById(R.id.fab_Offer);
         final boolean[] check = {false};

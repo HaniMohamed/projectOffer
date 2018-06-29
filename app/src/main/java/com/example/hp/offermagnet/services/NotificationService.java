@@ -53,7 +53,7 @@ public class NotificationService extends Service {
     SharedPreferences appPrefrences;
     SharedPreferences.Editor prefEditor;
 
-    int seenOffer =0, seenRequest=0, seenOfferPerReq=0;
+    int seenOffer =0, seenRequest=0, seenOfferPerReq=0, seenApprovedOffer=0;
 
     @Override
     public void onCreate() {
@@ -69,6 +69,7 @@ public class NotificationService extends Service {
                 getOffers();
                getRequests();
                getOfferOnRequest();
+               getApprovedOffer();
 
                 handler.postDelayed(runnable, 10000);
             }
@@ -269,6 +270,75 @@ public class NotificationService extends Service {
                                     manager.notify(id, builder.build());
 
                                     prefEditor.putInt("seenOfferPerReq",id);
+                                    prefEditor.apply();
+                                }
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap hashMap = new HashMap();
+                hashMap.put("id", db.getId());
+                hashMap.put("city", db.getCity());
+                return hashMap;
+            }
+        };
+        Volley.newRequestQueue(context).add(stringRequest);
+
+
+    }
+
+
+
+    public void getApprovedOffer(){
+        seenApprovedOffer=appPrefrences.getInt("seenApprovedOffer",0);
+        //Toast.makeText(context, "Service still running", Toast.LENGTH_LONG).show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://offer-system.000webhostapp.com/GetApprovednotification.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("data");
+                            for (int x = 0; x < jsonArray.length(); x++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(x);
+                                int id = Integer.parseInt(jsonObject1.getString("approv_id"));
+                                String title=jsonObject1.getString("request_title");
+                                String desc=jsonObject1.getString("description");
+
+
+                                if(id>seenApprovedOffer){
+                                    NotificationCompat.Builder builder =
+                                            new NotificationCompat.Builder(context)
+                                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                                    .setContentTitle("New Approved offer on Request: "+title)
+                                                    .setContentText(desc);
+
+                                    Intent notificationIntent = new Intent(context, NavDrawer.class);
+                                    PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                                            PendingIntent.FLAG_UPDATE_CURRENT);
+                                    builder.setContentIntent(contentIntent);
+                                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    builder.setSound(alarmSound);
+                                    // Add as notification
+                                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                    manager.notify(id, builder.build());
+
+                                    prefEditor.putInt("seenApprovedOffer",id);
                                     prefEditor.apply();
                                 }
 

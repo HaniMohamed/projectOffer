@@ -133,9 +133,13 @@ public class NavDrawer extends AppCompatActivity
 
         if (id == R.id.Home) {
             fragment = new HomeFragment();
+            Bundle bundle= new Bundle();
+            bundle.putString("srchTxt", "");
+            fragment.setArguments(bundle);
             fragmentManager.beginTransaction();
-            final FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.container_body, fragment).addToBackStack( "home" ).commit();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.add(R.id.container_body, fragment).addToBackStack( "home" ).commit();
+
         } else if (id == R.id.category) {
 
         } else if (id == R.id.wishlist) {
